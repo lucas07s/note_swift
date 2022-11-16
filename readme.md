@@ -1025,7 +1025,6 @@ for atai in suji {
 		50
 	============================== */
 	```
-
 </details>
 
 # 繰り返し間隔の指定
@@ -1050,3 +1049,129 @@ for x in stride (from: 1, to: 10, by: 3) {
 ============================== */
 ```
 
+# 関数
+何度も同じ処理を行う場合は関数で処理をまとめる方法もある。
+
+## 関数の書式
+|書式|概要|
+|---|---|
+|`func 関数名([引数1: データ型1 = 初期値1, 引数2: データ型2 = 初期値2...] {処理}`|引数を受けとって{ ~ }の中を実行する|
+
+### 例
+```swift
+func getTraiangleArea(base: Double = 0, height: Double = 0) {
+	let area = base * height / 2.0
+	print("\(base) × \(height) ÷ 2 = \(area)")
+}
+
+getTraiangleArea(base: 3, height: 6) // 「3.0 × 6.0 ÷ 2 = 9.0」が表示される
+
+getTraiangleArea(base: 2, height: 5) // 「2.0 × 5.0 ÷ 2 = 5.0」が表示される
+
+getTraiangleArea() // 引数の両方とも初期値を使用しているため「0.0 × 0.0 ÷ 2 = 0.0」と表示される
+```
+
+## 戻り値のある関数の書式
+|書式|概要|
+|---|---|
+|`func 関数名() -> 戻り値の型 {処理  return 戻り値}`|{~}の中を実行し、呼び出し元に値を返す関数を定義する|
+
+### 例
+```swift
+func getTraiangleArea(base: Double, height: Double) -> Double {
+	// 受け取った引数から三角形の面積を求める
+	let area = base * height / 2.0
+
+	return area
+}
+
+// 作成した関数で面積を求める
+let area = getTraiangleArea(base: 3, height: 5)
+// 求めた面積を表示
+print("面積は\(area)です") // 「面積は7.5です」が表示される
+```
+
+> ## 関数の引数名を省略するには
+> 関数を定義するときに引数名の先頭に「_」を記述する。
+> 上記の例と同じ内容で例を作成。
+> ### 例
+> ```swift
+>func getTraiangleArea(_ base: Double, _ height: Double) -> Double {
+>	// 受け取った引数から三角形の面積を求める
+>	let area = base * height / 2.0
+>
+>	return area
+>}
+>
+>// 作成した関数で面積を求める
+>let area = getTraiangleArea(3, 5) // 引数名省略
+>// 求めた面積を表示
+>print("面積は\(area)です") // 「面積は7.5です」が表示される
+>```
+
+# guard文
+## guard文の書式
+|書式|概要|
+|---|---|
+|`guard 条件式 else {条件式がfalseの場合の処理}`|関数を継続する条件が満たされない場合は、関数を終了する処理を実行する|
+
+### 例１
+```swift
+func getNum(x: Int, y: Int) -> Int {
+	// 引数yの値が0以外の場合はgetNum関数の処理を継続する
+	guard y != 0 else {
+		return 0
+	}
+	return x / y
+}
+
+let ans = getNum(10, y: 0)
+
+print(ans) // 「0」と表示される
+```
+
+### 例2
+```swift
+func printMsg(msg: String?) {
+    guard let myMsg = msg else { // msg引数がnilでないかをチェック
+        print("nilです")
+        return
+    }
+    print(myMsg)
+}
+
+printMsg(msg: "Hello!") // 「Hello!」と表示される
+
+printMsg(msg: nil) // 「nilです」と表示される
+```
+
+# defer文
+|書式|概要|
+|---|---|
+|`defer {関数を修了する前に実行したい処理}`|関数を抜ける直前に実行したい処理を定義する|
+
+## 例
+```swift
+func calcTax(num: Double) -> Double {
+	defer {
+		print("計算を終了します")
+	}
+
+	guard num > 100 else {
+		return 0
+	}
+
+	let taxNum = num * 1.08
+	return taxNum
+}
+
+let num1 = calcTax(num: 30)
+print("税込価格 = \(num1)") // 「税込価格 = 0.0」と表示される
+
+let num2 = calcTax(num: 130.0)
+print("税込価格 = \(num2)") // 「税込価格 = 140.4」と表示される
+```
+
+## ポイント
+defer文は関数の中に複数書くことができる。
+複数書いた場合は、下から順にdefer文が実行されていく。
